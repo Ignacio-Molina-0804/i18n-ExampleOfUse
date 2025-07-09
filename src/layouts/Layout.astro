@@ -1,17 +1,11 @@
 ---
-// Importaciones de Astro para i18n
+// Importaciones
 import { getRelativeLocaleUrl } from "astro:i18n";
-// Importaciones propias
 import { useTranslations } from "../i18n/util";
 import { languageList } from "../i18n/ui";
 
-// Obtiene el idioma actual de la URL o usa español por defecto
 const currentLang = Astro.currentLocale || "es";
-
-// Crea una función de traducción configurada para el idioma actual
-const translateLabels = useTranslations(
-  currentLang as keyof typeof languageList
-);
+const t = useTranslations(currentLang as keyof typeof languageList);
 ---
 
 <!doctype html>
@@ -25,78 +19,124 @@ const translateLabels = useTranslations(
     <header>
       <nav>
         <ul>
-          <!-- Enlace a Home con texto traducido -->
           <li>
             <a href={getRelativeLocaleUrl(currentLang, "/")}>
-              {translateLabels("nav.home")}
+              {t("nav.home")}
             </a>
           </li>
-          <!-- Enlace a About con texto traducido -->
           <li>
             <a href={getRelativeLocaleUrl(currentLang, "about")}>
-              {translateLabels("nav.about")}
+              {t("nav.about")}
             </a>
           </li>
-          
-          <!-- Selector de idioma - genera un enlace por cada idioma disponible -->
-          {
-            Object.entries(languageList).map(([key, label]: [string, string]) => {
-              return (
-                <li>
-                  <a href={`/${key}`}>{label}</a>
-                </li>
-              );
-            })
-          }
+
+          <!-- Selector de idiomas -->
+          <li>
+            <div class="language-selector">
+              <!-- Etiqueta accesible (opcional) -->
+              <label for="language-select" class="sr-only">
+                {t("nav.language") ?? "Seleccionar idioma"}
+              </label>
+
+              <select
+                id="language-select"
+                onchange="window.location.href = `/${this.value}`"
+                aria-label={t("nav.language") ?? "Seleccionar idioma"}
+              >
+                {
+                  Object.entries(languageList).map(([code, name]) => (
+                    <option value={code} selected={code === currentLang}>
+                      {name}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+          </li>
         </ul>
       </nav>
     </header>
-    
-    <!-- Contenido principal donde se inyectarán las páginas -->
+
     <main>
       <slot />
     </main>
+
+    <style>
+      html {
+        background-color: #292d3e;
+        color: #fff;
+      }
+
+      body {
+        padding: 0;
+        margin: 0;
+        box-sizing: content-box;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      nav > ul {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        justify-content: end;
+        padding: 1rem;
+        font-size: large;
+        margin: 0;
+      }
+
+      li > a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      main {
+        justify-items: center;
+        flex: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Estilos para el selector de idioma */
+      .language-selector {
+        position: relative;
+      }
+
+      select {
+        background-color: #3a3f58;
+        color: white;
+        border: 1px solid #4a4f6e;
+        border-radius: 4px;
+        padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+        font-family: inherit;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 1rem;
+      }
+
+      select:hover {
+        background-color: #4a4f6e;
+      }
+
+      /* Estilo para lectores de pantalla */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+    </style>
   </body>
 </html>
-
-<!-- Estilos CSS para el layout -->
-<style>
-  html {
-    background-color: #292d3e;
-    color: #fff;
-  }
-
-  body {
-    padding: 0;
-    margin: 0;
-    box-sizing: content-box;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    font-family: "Courier New", Courier, monospace;
-  }
-
-  nav > ul {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-    justify-content: end;
-    padding: 1rem;
-    font-size: large;
-    margin: 0;
-  }
-
-  li > a {
-    color: #fff;
-    text-decoration: none;
-  }
-
-  main {
-    justify-items: center;
-    flex: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-</style>
