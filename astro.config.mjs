@@ -1,27 +1,20 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// https://astro.build/config
+// Configuración principal de Astro
 export default defineConfig({
-
     i18n: {
-
-        defaultLocale: 'es',
-        locales: ['es', 'en', 'fr'],
+        defaultLocale: 'es',  // Idioma por defecto del sitio
+        locales: ['es', 'en', 'fr'],  // Idiomas soportados
+        
         routing: {
-
-            // PrefixDefaultLocale Modifica la URL para incluir el idioma por defecto.
-            // Por ejemplo, si el idioma por defecto es 'es', la URL será '/es/'
+            // PrefixDefaultLocale: true = siempre muestra el idioma en la URL
+            // Ej: /es/inicio en lugar de /inicio para el idioma default
             prefixDefaultLocale: true, 
 
-            // RedirectToDefaultLocale Redirige a la URL del idioma por defecto 
-            // si no se especifica un idioma.
-            // Por ejemplo, si el usuario accede a '/', será redirigido a '/es/'
-            // Esto es útil para evitar URLs sin idioma
+            // RedirectToDefaultLocale (comentado)
+            // Si true, redirige / → /es cuando el default es 'es'
             // redirectToDefaultLocale: false
-
         }
-
     }
-
 });

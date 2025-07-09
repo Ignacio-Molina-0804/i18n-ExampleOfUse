@@ -1,10 +1,14 @@
 ---
+// Importaciones de Astro para i18n
 import { getRelativeLocaleUrl } from "astro:i18n";
+// Importaciones propias
 import { useTranslations } from "../i18n/util";
 import { languageList } from "../i18n/ui";
 
+// Obtiene el idioma actual de la URL o usa español por defecto
 const currentLang = Astro.currentLocale || "es";
 
+// Crea una función de traducción configurada para el idioma actual
 const translateLabels = useTranslations(
   currentLang as keyof typeof languageList
 );
@@ -21,33 +25,41 @@ const translateLabels = useTranslations(
     <header>
       <nav>
         <ul>
+          <!-- Enlace a Home con texto traducido -->
           <li>
-            <a href={getRelativeLocaleUrl(currentLang, "/")}
-              >{translateLabels("nav.home")}</a
-            >
+            <a href={getRelativeLocaleUrl(currentLang, "/")}>
+              {translateLabels("nav.home")}
+            </a>
           </li>
+          <!-- Enlace a About con texto traducido -->
           <li>
-            <a href={getRelativeLocaleUrl(currentLang, "about")}
-              >{translateLabels("nav.about")}</a
-            >
+            <a href={getRelativeLocaleUrl(currentLang, "about")}>
+              {translateLabels("nav.about")}
+            </a>
           </li>
+          
+          <!-- Selector de idioma - genera un enlace por cada idioma disponible -->
+          {
+            Object.entries(languageList).map(([key, label]: [string, string]) => {
+              return (
+                <li>
+                  <a href={`/${key}`}>{label}</a>
+                </li>
+              );
+            })
+          }
         </ul>
-        {
-          Object.entries(languageList).map(([key, label]: [string, string]) => {
-            return (
-              <li>
-                <a href={`/${key}`}>{label}</a>
-              </li>
-            );
-          })
-        }
       </nav>
     </header>
+    
+    <!-- Contenido principal donde se inyectarán las páginas -->
     <main>
       <slot />
     </main>
   </body>
 </html>
+
+<!-- Estilos CSS para el layout -->
 <style>
   html {
     background-color: #292d3e;
